@@ -138,12 +138,21 @@
         }
 
         .mobile-menu {
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            background-color: #FAFAF7;
+            top: 80px;
+            height: calc(100vh - 80px);
         }
 
         .mobile-menu.open {
-            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        body.menu-open {
+            overflow: hidden;
         }
 
         .form-input {
@@ -184,20 +193,13 @@
             </div>
         </div>
 
-        <div class="mobile-menu fixed inset-y-0 right-0 w-full max-w-sm bg-cream shadow-2xl md:hidden" id="mobile-menu">
-            <div class="flex flex-col h-full p-8">
-                <button class="self-end p-2 text-gray-600" id="mobile-menu-close" aria-label="Zamknij menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-                <div class="flex flex-col space-y-6 mt-8">
-                    <a href="index.html" class="text-lg font-medium text-gray-600 hover:text-blush-700">Strona Główna</a>
-                    <a href="about.html" class="text-lg font-medium text-gray-600 hover:text-blush-700">O Nas</a>
-                    <a href="gallery.html" class="text-lg font-medium text-gray-600 hover:text-blush-700">Galeria</a>
-                    <a href="contact.html" class="text-lg font-medium text-blush-700">Kontakt</a>
-                    <a href="index.html#pricing" class="mt-4 px-6 py-3 bg-blush-600 text-white text-center font-medium rounded-full">Rezerwuj</a>
-                </div>
+        <div class="mobile-menu fixed left-0 right-0 bottom-0 z-40 md:hidden" id="mobile-menu">
+            <div class="flex flex-col items-center justify-center h-full space-y-8 px-8">
+                <a href="index.html" class="text-2xl font-medium text-gray-600 hover:text-blush-700">Strona Główna</a>
+                <a href="about.html" class="text-2xl font-medium text-gray-600 hover:text-blush-700">O Nas</a>
+                <a href="gallery.html" class="text-2xl font-medium text-gray-600 hover:text-blush-700">Galeria</a>
+                <a href="contact.html" class="text-2xl font-medium text-blush-700">Kontakt</a>
+                <a href="index.html#pricing" class="mt-4 px-8 py-4 bg-blush-600 text-white text-center text-lg font-medium rounded-full hover:bg-blush-700 transition-colors">Rezerwuj zajęcia</a>
             </div>
         </div>
     </nav>
@@ -440,23 +442,22 @@
     <script>
         // Mobile menu toggle
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenuClose = document.getElementById('mobile-menu-close');
         const mobileMenu = document.getElementById('mobile-menu');
 
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.add('open');
-        });
+        function toggleMenu() {
+            const isOpen = mobileMenu.classList.toggle('open');
+            document.body.classList.toggle('menu-open', isOpen);
+            mobileMenuBtn.innerHTML = isOpen
+                ? '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>'
+                : '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>';
+        }
 
-        mobileMenuClose.addEventListener('click', () => {
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+        mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
             mobileMenu.classList.remove('open');
-        });
-
-        // Close mobile menu when clicking on a link
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('open');
-            });
-        });
+            document.body.classList.remove('menu-open');
+            mobileMenuBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>';
+        }));
 
         // Navbar scroll effect
         const navbar = document.getElementById('navbar');
